@@ -1,0 +1,96 @@
+CoastTile.m:smg=false(nwx,nwx);%water mask from a priori coastline shapefiles
+CoastTile.m:Me1=imerode(wm.z, ones(width/resrc)); % erode the box edge also; to fix: change width in CoastTileMain;
+CoastTile.m:        else
+CoastTile.m:else
+CoastTile.m:else
+CoastTile.m:    else
+CoastTile.m:      else
+CoastTile.m:    if isempty(idn) idxn(i)=0;else;idxn(i)=idn;end
+CoastTile.m:fprintf ('\n Step 1.4: loading of data, calculating NDWI, and assigning chosen output images for pixels in each group.')
+CoastTile.m:elseif isel==6
+CoastTile.m:	else %load water mask data for collecting demg
+CoastTile.m:    else
+CoastTile.m:            else % use the stacking DEM as reference
+CoastTile.m:            cloudsum=sum(sum(Mextra3)); %pixels
+CoastTile.m:        % Recommend the following line, since the cloud shadow might introduce false water areas.
+CoastTile.m:        else  % assgin for water area only
+CoastTileMain.m:    else
+CoastTileMono.m:smg=false(nwx,nwx);%water mask from a priori coastline shapefiles
+CoastTileMono.m:Me1=imerode(wm.z, ones(width/resrc)); % erode the box edge also; to fix: change width in CoastTileMain;
+CoastTileMono.m:else
+CoastTileMono.m:else
+CoastTileMono.m:    else
+CoastTileMono.m:      else
+CoastTileMono.m:    if isempty(idn) idxn(i)=0;else;idxn(i)=idn;end
+CoastTileMono.m:fprintf ('\n Step 1.4: loading of data, calculating NDWI, and assigning chosen output images for pixels in each group.')
+CoastTileMono.m:elseif isel==6
+CoastTileMono.m:	else %load water mask data for collecting demg
+CoastTileMono.m:    else
+CoastTileMono.m:            else % use the stacking DEM as reference
+CoastTileMono.m:            cloudsum=sum(sum(Mextra3)); %pixels
+CoastTileMono.m:        % Recommend the following line, since the cloud shadow might introduce false water areas.
+CoastTileMono.m:        else  % assgin for water area only
+CoastTileMonoMain.m:   str=sprintf('ls  %s/*.xml > %s',deblank(multidir),filename);
+constant.m:cloudarea=100*100; % clouds over water area, minimum size 100m by 100m; if smaller, clouds get ignored. Also smallest island that would be kept.
+enviwrite.m:%   format. Also written is the ascii ENVI header file 'filename.hdr'.
+enviwrite.m:    elseif ~isnumeric(varargin{n+1})    &&...
+enviwrite.m:else
+enviwrite.m:else
+enviwrite.m:else
+hillshade.m:function h = hillshade(dem,X,Y,varargin)
+hillshade.m:% PUPROSE: Calculate hillshade for a digital elevation model (DEM)
+hillshade.m:% USAGE: h = hillshade(dem,X,Y,varagin)
+hillshade.m:% where: dem is the DEM to calculate hillshade for
+hillshade.m:%        'plotit'   creates a simple plot of the hillshade
+hillshade.m:%       h=hillshade(peaks(50),1:50,1:50,'azimuth',45,'altitude',100,'plotit')
+hillshade.m:%       - calculates the hillshade for an example 50x50 peak surface.
+hillshade.m:%       - creates an output hillshade plot
+hillshade.m:% See also: GRADIENT, CART2POL
+hillshade.m:%       calculation (instead of Horn's method) with ESRIs hillshade
+hillshade.m:%grad = grad/d; % multiply w cellsize
+hillshade.m:%% hillshade calculation
+hillshade.m:h(h<0)=0; % set hillshade values to min of 0.
+hillshade.m:h=setborder(h,1,NaN); % set border cells to NaN
+hillshade.m:grid(:,1:bs)=bvalue; %left cols
+imagebd.m:	else
+multispec.m:elseif strcmp(satname,'WV02') ||strcmp(satname,'WV03') 
+multispec.m:%[status , cmdout ]=system(['ls ',multidir,'/*/',ntffile]);
+multispec.m:elseif ~isempty(cmdout2) %if .tif file is found.
+multispec.m:else; 
+multispec.m:    else
+multispec.m:else
+multispec.m:elseif strcmp(satname,'WV02') ||strcmp(satname,'WV03') 
+multispec.m:else
+multispec.m:    else %faster, only interpolate at each image coverage and compare at the overlapping area, 30 sec
+multispec.m:	% maybe union.m functin also works.
+multispecmono.m:elseif strcmp(satname,'WV02') ||strcmp(satname,'WV03') 
+multispecmono.m:%[status , cmdout ]=system(['ls ',multidir,'/*/',ntffile]);%status =0 if found; but too strict on multidir.
+multispecmono.m:elseif ~isempty(cmdout2) %if .tif file is found.
+multispecmono.m:else; 
+multispecmono.m:    else
+multispecmono.m:else
+multispecmono.m:elseif strcmp(satname,'WV02') ||strcmp(satname,'WV03') 
+multispecmono.m:else
+multispecmono.m:    else %faster, only interpolate at each image coverage and compare at the overlapping area, 30 sec
+multispecmono.m:	% maybe union.m functin also works.
+polarstereo_fwd.m:%   See also: MINVTRAN, MFWDTRAN.
+polarstereo_fwd.m:else
+polarstereo_fwd.m:%this is not commented very well. See Snyder for details.
+polarstereo_inv.m:%   See also: MINVTRAN, MFWDTRAN.
+polarstereo_inv.m:else
+polarstereo_inv.m:%this is not commented very well. See Snyder for details.
+readgainoffset.m:elseif strcmp(satname,'WV02') ||strcmp(satname,'WV03') 
+readgainoffset.m:elseif strcmp(satname,'WV01')
+readGeotiff.m:info.cols   = Tinfo.Width;
+readGeotiff.m:subcols = [1 info.cols];
+readGeotiff.m:x = minx + ((0:info.cols-1).*info.map_info.dx);
+readGeotiff.m:        subcols = varargin{3}(1:2);
+readGeotiff.m:    elseif strcmp(varargin{2},'map_subset');
+readGeotiff.m:        subcols = (map_subset(1:2)-info.map_info.mapx)./...
+readGeotiff.m:        subcols= round(subcols);
+readGeotiff.m:        subcols(subcols < 1) = 1;
+readGeotiff.m:        subcols(subcols > info.cols) = info.cols;
+readGeotiff.m:     elseif strcmpi(varargin{2},'mapinfoonly');
+readGeotiff.m:I.x = x(subcols(1):subcols(2));
+readGeotiff.m:    I.z = imread(name,'PixelRegion',{subrows,subcols});
+writeGeotiff.m:%else
