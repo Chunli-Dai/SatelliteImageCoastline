@@ -820,9 +820,10 @@ Medgsib(my0(1),mx0(:))=1;Medgsib(my0(end),mx0(:))=1;Medgsib(my0(:),mx0(1))=1;Med
 %save work2.mat jumpc
 end % for isel
 %save sv4.mat datarsv isv -v7.3
-if flagplot==1 || 1
+if flagplot==1 
 save sv5.mat xout yout iselop novlpf novlpfc prob jump Medgsib -v7.3
 else
+%save sv5.mat xout yout novlpf novlpfc prob jump Medgsib -v7.3
 end
 whos
 ck2=clock;
