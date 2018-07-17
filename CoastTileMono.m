@@ -919,6 +919,8 @@ end
 fprintf('Retrieve boundary')
 toc
 clear Mt BWb Medgs1
+idd=find(cellfun(@isempty,xo)); %fix bug 12
+xo(idd)=[];yo(idd)=[];
 save xoyo.mat xo yo -v7.3
 % shp1 = struct('Geometry', 'PolyGon', 'X', xo, 'Y', yo);
 shp1 = struct('Geometry', 'PolyLine', 'X', xo, 'Y', yo);
