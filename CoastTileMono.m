@@ -634,6 +634,10 @@ if nyj<=1||nxj<=1;continue;end
 
 %edge of the overlapping zone
 Medgsib(my0(1),mx0(:))=1;Medgsib(my0(end),mx0(:))=1;Medgsib(my0(:),mx0(1))=1;Medgsib(my0(:),mx0(end))=1;
+%the outer ring
+oidx=max(mx0(1)-1,1):min(mx0(end)+1,nsubx);
+oidy=max(my0(1)-1,1):min(my0(end)+1,nsuby);
+Medgsib(oidy(1),oidx(:))=1;Medgsib(oidy(end),oidx(:))=1;Medgsib(oidy(:),oidx(1))=1;Medgsib(oidy(:),oidx(end))=1;
     
 % get coastline/watermask for each file, and save it.
     t=zeros(length(id),1);
@@ -730,7 +734,7 @@ Medgsib(my0(1),mx0(:))=1;Medgsib(my0(end),mx0(:))=1;Medgsib(my0(:),mx0(1))=1;Med
 %save work1.mat demg
         demgc=demg;% total demg before excluding clouds.
 
-        if 0 %method 1; if one image is mistakenly all water, all other images will be missed in clouds detection.
+        if 0 %method 1; if one image is mistakenly all water(e.g. GEOEYE image), all other images will be mistakenly deleted in clouds detection.
         % pick the larger values at the overlapping area. ...
         M1=max(demg,[],3); %change M1 from double to int8;
     % 	M1(isnan(M1))=-1;M1=int8(M1);
@@ -760,6 +764,7 @@ Medgsib(my0(1),mx0(:))=1;Medgsib(my0(end),mx0(:))=1;Medgsib(my0(:),mx0(1))=1;Med
             end %
             M1t(demgt==-1)=-1;
             Mextra=abs(M1t-demgt); %extra non water area, which means clouds. 1 if clouds, or land (vs lake).
+		%1 extra land, -1 extra water/could be shadows;trust the stacked mask
             
             Mextra3=icluster(Mextra,nlb,demgt,cloudth); %all clusters that are clouds over water
             
@@ -932,6 +937,7 @@ if flagplot==1
 figure;imagesc(xout,yout,double(Modfil),'alphadata',~Medgs)
 hold on;plot(X(M),Y(M),'ro')
 xl=X(M);yl=Y(M);
+if 0
 hold on;plot(xl(probl>0.6)*1e-3,yl(probl>0.6)*1e-3,'r.');
 hold on;plot(xl(probl<=0.6&probl>0.2)*1e-3,yl(probl<=0.6&probl>0.2)*1e-3,'m.');
 hold on;plot(xl(probl<=0.2&probl>=0.1)*1e-3,yl(probl<=0.2&probl>=0.1)*1e-3,'k.');
@@ -942,6 +948,7 @@ savefig(gcf,'Tilemask','compact')
 
 figure;hist(probl)
 saveas(gcf,'probabilityw','fig')
+end
 
 % plot the chosen piece id for each output pixel
 figure;set(gcf,'Color','white');set(gca,'FontSize', 18);set(gcf, 'PaperPosition', [0.25 2.5 4 3]);
