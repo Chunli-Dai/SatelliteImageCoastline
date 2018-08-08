@@ -73,21 +73,22 @@ for is=1:nsce
 ntffile=strrep(mfile{is},'.xml','.ntf');
 tiffile=strrep(mfile{is},'.xml','.tif');
 %[status , cmdout ]=system(['ls ',multidir,'/*/',ntffile]);%status =0 if found; but too strict on multidir.
-[status , cmdout ]=system(['find ',multidir,' -name ',ntffile]); %returns empty for cmdout when not found. status=0 always
+% [status , cmdout ]=system(['find ',multidir,' -name ',ntffile]); %returns empty for cmdout when not found. status=0 always
 [status2 , cmdout2 ]=system(['find ',multidir,' -name ',tiffile]);
-if  ~isempty(cmdout) %if .ntf file is found, tif file is produced and stored in orthworkdir.
+if 0&& ~isempty(cmdout) %if .ntf file is found, tif file is produced and stored in orthworkdir.
     ntffile=deblank(cmdout);
     [dir,name,ext] =fileparts(ntffile);
 %   tiffile=deblank([dir,'/',mfile{is}]);
     tiffile=deblank([orthworkdir,'/',mfile{is}]); %to generate the tif file
     tiffile=strrep(tiffile,'.xml','.tif');
-elseif ~isempty(cmdout2) %if .tif file is found.
+end
+if ~isempty(cmdout2) %if .tif file is found.
     tiffile=deblank(cmdout2);	
 else; 
-	warning(['Multispectral file ',ntffile,' not found!'])
+	warning(['Multispectral file ',tiffile,' not found!'])
 	continue
 end
-if ~exist(tiffile,'file')
+if 0&& ~exist(tiffile,'file')
 display(['time gdalwarp -rpc -et 0.01 -co tiled=yes -co compress=lzw -t_srs EPSG:3413 ',ntffile,' ',tiffile])
 system(['time gdalwarp -rpc -et 0.01 -co tiled=yes -co compress=lzw -t_srs EPSG:3413 ',ntffile,' ',tiffile]);
 end

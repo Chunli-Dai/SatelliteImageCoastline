@@ -930,7 +930,9 @@ save xoyo.mat xo yo -v7.3
 % shp1 = struct('Geometry', 'PolyGon', 'X', xo, 'Y', yo);
 shp1 = struct('Geometry', 'PolyLine', 'X', xo, 'Y', yo);
 %shapewrite(shp1, 'coastline.shp');
+if ~isempty(shp1)
 shapewrite(shp1, ofile1);
+end
 
 if flagplot==1
 [X,Y]=meshgrid(xout,yout);
