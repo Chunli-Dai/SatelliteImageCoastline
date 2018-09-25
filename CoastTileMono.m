@@ -666,7 +666,7 @@ Medgsib(oidy(1),oidx(:))=1;Medgsib(oidy(end),oidx(:))=1;Medgsib(oidy(:),oidx(1))
         if isempty(data.z)
 	%Modification Sept. 25, 2018: save the empty results to avoid repeat calculation of NDWI.
 	datar= struct();
-        datar.x=[];datar.y=[];  datar.z=[]; 
+        datar.x=1;datar.y=[];  datar.z=[]; 
         datarsv(iisv)=datar;
 
             idd=[idd;j];
