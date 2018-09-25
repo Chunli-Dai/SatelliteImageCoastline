@@ -73,10 +73,12 @@ for is=1:nsce
 ntffile=strrep(mfile{is},'.xml','.ntf');
 tiffile=strrep(mfile{is},'.xml','.tif');
 %[status , cmdout ]=system(['ls ',multidir,'/*/',ntffile]);%status =0 if found; but too strict on multidir.
-% [status , cmdout ]=system(['find ',multidir,' -name ',ntffile]); %returns empty for cmdout when not found. status=0 always
+[status , cmdout ]=system(['find ',multidir,' -name ',ntffile]); %returns empty for cmdout when not found. status=0 always
 [status2 , cmdout2 ]=system(['find ',multidir,' -name ',tiffile]);
-if 0&& ~isempty(cmdout) %if .ntf file is found, tif file is produced and stored in orthworkdir.
+if  ~isempty(cmdout) %if .ntf file is found, tif file is produced and stored in orthworkdir.
     ntffile=deblank(cmdout);
+end
+if 0
     [dir,name,ext] =fileparts(ntffile);
 %   tiffile=deblank([dir,'/',mfile{is}]);
     tiffile=deblank([orthworkdir,'/',mfile{is}]); %to generate the tif file
@@ -212,6 +214,12 @@ M(data.z(:,:,iGreen) == 0)=-1;%set the image edge of M to -1.
 
 dx2=dzxydu(is,2:3);
 
+%Modification Sept. 25, 2018: Delete scenes with bad STD.
+if ~(std1<stdthres&std2<stdthres)
+Mstrip=struct(); Mstrip.x=[];Mstrip.y=[];Mstrip.z=[];Mstrip.coast=[];
+return
+end
+
 % collect overlapping M, choose value from (NaN, value), and choose 1 from
 % (value, 1); <-> choose the larger value of M
 if is==1 || isempty(Mstrip.z)
@@ -325,7 +333,6 @@ hold on;plot(X(M),Y(M),'ro')
 end
 
 Mstrip.coast=[X(M),Y(M)]; %merged coast for the strip
-
 
 end
 

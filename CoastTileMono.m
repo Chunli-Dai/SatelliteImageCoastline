@@ -664,6 +664,11 @@ Medgsib(oidy(1),oidx(:))=1;Medgsib(oidy(end),oidx(:))=1;Medgsib(oidy(:),oidx(1))
         display(['Getting water mask of this strip ',num2str(j)]);
         toc
         if isempty(data.z)
+	%Modification Sept. 25, 2018: save the empty results to avoid repeat calculation of NDWI.
+	datar= struct();
+        datar.x=[];datar.y=[];  datar.z=[]; 
+        datarsv(iisv)=datar;
+
             idd=[idd;j];
             continue
         end  
@@ -714,6 +719,13 @@ Medgsib(oidy(1),oidx(:))=1;Medgsib(oidy(end),oidx(:))=1;Medgsib(oidy(:),oidx(1))
       
 	else %load water mask data for collecting demg
         datar=datarsv(iisv);
+
+	%Modification Sept. 25, 2018:skip empty results.
+	if isempty(datar.z)
+            idd=[idd;j];
+            continue
+        end
+
 	end %if
     
     %assign DEM to the overlapping zone

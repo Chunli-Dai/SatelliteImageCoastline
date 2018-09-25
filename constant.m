@@ -1,6 +1,7 @@
 %directory
 %General directory that contains the mosaic tile DEM files, such as /elev/dem/setsm/ArcticDEM/mosaic/v2.0/
 macdir=[]; % Leave it blank for linux;Absolute main directory part.
+%macdir='/Users/chunlidai/surge/';
 tiledir=[macdir,'/data/chunli/coastline/'];%ArcticDEM mosaic tile directory. 
 stripdir='/*/ArcticDEM/region*/strips/2m/'; %directory of strip files
 %multidir=[macdir,'/data1/pgc_projects/dai_aleutians_multi_mono/imagery/WV*/']; % directory of mono multispectral images
@@ -20,6 +21,7 @@ novlmt=3; %if number of repeats <= novlmt, set the area as edges/void.
 %control parameters for multispec.m
 threshold=0.3; %0.3; %threshold of NDWI for water classification.
 probthre=50.;% threshold for water probability.
+stdthres=1; % if NDWI STD > stdthres, discard the image.
 
 % Revise the parent directory for the following two lines.
 orthworkdir=[macdir,'/data/chunli/coastline/orthorectwork/']; %to store new orthorectifed images
