@@ -191,6 +191,8 @@ Green=rhog(:,:,iGreen);NIR2=rhog(:,:,iNIR2);Coastal=rhog(:,:,iCoastal);
 NDWI=double(Coastal-NIR2)./double(Coastal+NIR2);
 %[mean(NDWI(mp)), mean(NDWI(mpd)) , mean(NDWI(mp))-mean(NDWI(mpd))]= 1.1 for radiance, 0.9 for digital number;
 end
+%rhog can be 13GB
+clear rhog 
 
 %retrieving statistics of NDWI over a priori water mask.
 % wm: 1 land, 0 water, out of region: 1, non water.
@@ -205,20 +207,35 @@ wm1 = interp2(wm.x,wm.y,Me1,data.x,data.y','*nearest',0);
 ndwil=NDWI(wm1==1);
 mean2=nanmean(ndwil);std2=nanstd(ndwil);
 
+%Oct 8, 2018; Adaptive threshold 
+%Modification Sept. 25, 2018: Delete scenes with bad STD.
+
+istdthres=min([stdthres,(mean1 - mean2)/2]);
+badflag=0;
+if isnan(mean1) && isnan(mean2)
+    badflag=1;ithreshold =threshold;
+elseif isnan(mean1) && mean2<0.2 || isnan(mean2)&&mean1>0.8
+        ithreshold =threshold;
+elseif (std1<istdthres && std2<istdthres)
+        ithreshold=(mean1+mean2)/2;
+        if isnan(ithreshold);warning('Estimated threshold is NAN');ithreshold=threshold;end
+else %discard the image.
+    badflag=1; ithreshold =threshold;
+end
+
 fid = fopen('output/ndwistats.dat','a'); %statistics
-fprintf(fid,' %f %f %f %f (NDWI mean std) %s \n',mean1,std1,mean2,std2,ntffile);
+fprintf(fid,' %f %f %f %f %f %d (NDWI mean std thres) %s \n',mean1,std1,mean2,std2,ithreshold,badflag,ntffile);
 fclose(fid);
 
-M=int8(NDWI>threshold);%0.3; %threshold
-M(data.z(:,:,iGreen) == 0)=-1;%set the image edge of M to -1.
-
-dx2=dzxydu(is,2:3);
-
-%Modification Sept. 25, 2018: Delete scenes with bad STD.
-if ~(std1<stdthres&std2<stdthres)
+if badflag==1;
 Mstrip=struct(); Mstrip.x=[];Mstrip.y=[];Mstrip.z=[];Mstrip.coast=[];
 return
 end
+
+M=int8(NDWI>ithreshold);%0.3; %threshold
+M(data.z(:,:,iGreen) == 0)=-1;%set the image edge of M to -1.
+
+dx2=dzxydu(is,2:3);
 
 % collect overlapping M, choose value from (NaN, value), and choose 1 from
 % (value, 1); <-> choose the larger value of M

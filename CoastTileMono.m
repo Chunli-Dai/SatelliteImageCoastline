@@ -93,6 +93,7 @@ ofile1=['output/',ifile(1:10),'coast_v1.0.shp'];
 ofile2=['output/',ifile(1:10),'prob_v1.0.tif'];
 %ofile3=[ifile(1:10),'lessdata_v1.0.tif'];
 ofile3=['output/',ifile(1:10),'nov_v1.0.tif']; %number of overlapping coverages
+ofile4=['output/',ifile(1:10),'bound_v1.0.tif']; %image boundaries, no data areas
 
 % rang0 = [  -3450000    -3400000     1350000     1400000];
 
@@ -447,7 +448,13 @@ for ix=1:nx
         %get rid of the strips have the same date and same sensor
         [un idx_last idx] = unique(str(:));
         id1=1:length(id);idd=id1(~ismember(id1,idx_last));
-        id(idd)=[];
+%       id(idd)=[];
+
+        %Oct 9, 2018
+        %in case of two many repeats, use only the latest (in time) novmax*2 measurements for grouping.
+        iddd=1:(length(un)-novmax*2); %un is sorted as time.
+        idd=[idd(:);idx_last(iddd)]; %delete the first iddd of un
+        id(idd)=[];str(idd)=[];
 
         novlp(iy,ix)=length(id);
         idg{ixy}=sort(id);   %finding the DEMs at each zones.    
@@ -740,6 +747,10 @@ Medgsib(oidy(1),oidx(:))=1;Medgsib(oidy(end),oidx(:))=1;Medgsib(oidy(:),oidx(1))
          demg(1:nyj,1:nxj,j)=datar.z(idy,idx);
     end
     
+        %Oct 9, 2018
+        %in case of two many repeats, use only the novmax measurements
+        if length(id)-length(idd) > novmax; break;end
+
 	end %for j
 % % end of loading
 	id(idd)=[];demg(:,:,idd)=[];t(idd)=[];
@@ -854,7 +865,7 @@ clear datarsv data
 
 %write
 probo=prob;
-probo(prob==0)=uint8(255); %make land transparent
+%probo(prob==0)=uint8(255); %make land transparent
 projstr='polar stereo north';
 %OutName='prob.tif';
 OutName=ofile2;
@@ -900,6 +911,10 @@ Medgstb(:,idx)=1;Medgstb(idy,:)=1;
 
 Medgs=Medgs|(prob==255|novlpf<=novlmt)|Medgsap; %add more edge based on repeats.
 Medgs1=imdilate(Medgs,ones(3))|Medgstb|Medgsib; % combine all edges. Medgsib Medgsap
+
+%save image boundary file
+writeGeotiff(ofile4,xout,yout,uint8(Medgs1),1,255,projstr)
+
 B = bwboundaries(~Modfil,'noholes'); %^_^ keep the unwanted lake islands.
 n=length(B);xo=cell(n,1);yo=cell(n,1);
 clear prob Medgsib Medgstb
