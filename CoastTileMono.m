@@ -749,7 +749,7 @@ Medgsib(oidy(1),oidx(:))=1;Medgsib(oidy(end),oidx(:))=1;Medgsib(oidy(:),oidx(1))
     
         %Oct 9, 2018
         %in case of two many repeats, use only the novmax measurements
-        if length(id)-length(idd) > novmax; break;end
+        if j-length(idd) >= novmax;idd=[idd(:);[j+1:length(id)]'];  break;end	
 
 	end %for j
 % % end of loading
