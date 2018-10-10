@@ -18,11 +18,12 @@ almt=1e3*1e3;  %2e3*2e3;%(lost of data) %1e3*1e3 (suggested value); %minimum are
 cloudflag=1; %1 apply cloud detection; 0 do not apply cloud detection (four times faster).
 novlmt=3; %if number of repeats <= novlmt, set the area as edges/void.
 novmax=60; % if number of repeats > novmax, only select novmax of them .
+cntmin=25*25; %unit:pixels. The size of a priori land/ocean area should be big enough to ensure reliable statistical analysis of the histogram of the region. (Liu and Jezek, 2004)
 
 %control parameters for multispec.m
 threshold=0.3; %0.3; %threshold of NDWI for water classification.
 probthre=50.;% threshold for water probability.
-stdthres=1; % if NDWI STD > stdthres, discard the image.
+stdthres=0.5; % if NDWI STD > stdthres, discard the image.
 
 % Revise the parent directory for the following two lines.
 orthworkdir=[macdir,'/data/chunli/coastline/orthorectwork/']; %to store new orthorectifed images

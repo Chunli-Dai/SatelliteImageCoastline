@@ -121,10 +121,19 @@ for j=1:cnt
     [sx,sy]=polarstereo_fwd(S(j).Y,S(j).X,[], [],70,-45);
     dx=resrc;
     idx=round((sx-rang0(1))/dx)+1;idy=round((sy-rang0(4))/(-dx))+1;
-    idt=isnan(idx)|isnan(idy);
-    idx(idt)=[];idy(idt)=[];
+%     idt=isnan(idx)|isnan(idy);
+%     idx(idt)=[];idy(idt)=[];
+    %Oct 10, 2018:fix bug 14; separate polygons using the NaN;
+    M=[idx(:),idy(:)];
+    idx = any(isnan(M),2);
+    idy = 1+cumsum(idx);
+    idz = 1:size(M,1);
+    C = accumarray(idy(~idx),idz(~idx),[],@(r){M(r,:)});
+    for k=1:length(C)
+    idx=C{k}(:,1);idy=C{k}(:,2);   
     sm=poly2mask(idx,idy,nwx,nwx); % fast, apply to each polygon one by one.
     smg=smg|sm;
+    end
 end
 wm=[];wm.x=xw;wm.y=yw;wm.z=smg;clear smg; %1 land, 0 water
 if(sum(wm.z(:))==0||sum(wm.z(:))==nwx*nwx);fprintf('This tile contain no coastline (all land or all ocean).');return;end % if all land or all water, i.e. no coastline.
@@ -450,11 +459,11 @@ for ix=1:nx
         id1=1:length(id);idd=id1(~ismember(id1,idx_last));
 %       id(idd)=[];
 
-        %Oct 9, 2018
-        %in case of two many repeats, use only the latest (in time) novmax*2 measurements for grouping.
-        iddd=1:(length(un)-novmax*2); %un is sorted as time.
-        idd=[idd(:);idx_last(iddd)]; %delete the first iddd of un
-        id(idd)=[];str(idd)=[];
+	%Oct 9, 2018
+	%in case of two many repeats, use only the latest (in time) novmax*2 measurements for grouping.
+	iddd=1:(length(un)-novmax*2); %un is sorted as time.
+	idd=[idd(:);idx_last(iddd)]; %delete the first iddd of un
+	id(idd)=[];str(idd)=[];
 
         novlp(iy,ix)=length(id);
         idg{ixy}=sort(id);   %finding the DEMs at each zones.    
@@ -747,9 +756,9 @@ Medgsib(oidy(1),oidx(:))=1;Medgsib(oidy(end),oidx(:))=1;Medgsib(oidy(:),oidx(1))
          demg(1:nyj,1:nxj,j)=datar.z(idy,idx);
     end
     
-        %Oct 9, 2018
-        %in case of two many repeats, use only the novmax measurements
-        if j-length(idd) >= novmax;idd=[idd(:);[j+1:length(id)]'];  break;end	
+	%Oct 9, 2018
+	%in case of two many repeats, use only the novmax measurements
+	if j-length(idd) >= novmax;idd=[idd(:);[j+1:length(id)]'];  break;end
 
 	end %for j
 % % end of loading
