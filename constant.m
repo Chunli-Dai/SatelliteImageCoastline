@@ -5,7 +5,9 @@ macdir=[]; % Leave it blank for linux;Absolute main directory part.
 tiledir=[macdir,'/data/chunli/coastline/'];%ArcticDEM mosaic tile directory. 
 stripdir='/*/ArcticDEM/region*/strips/2m/'; %directory of strip files
 %multidir=[macdir,'/data1/pgc_projects/dai_aleutians_multi_mono/imagery/WV*/']; % directory of mono multispectral images
-multidir=[macdir,'/data1/pgc_projects/coastline/imagery/']; %directory of multispectral images; cover all images in the targed zone
+%multidir=[macdir,'/data1/pgc_projects/coastline/imagery/']; %directory of multispectral images; cover all images in the targed zone
+multidir=[macdir,'/data1/pgc_projects/coastline/results/iceland/multi_reykjavik/'];
+probdir='./output/'; % the output directory that contains the output of CoastTileMonoMain.m (probability results and image boundary results).
 
 %control parameters
 resr=2;
@@ -17,12 +19,12 @@ lakearea=1000*500*4;%smallest water body (or lake) (m^2) that would be kept;
 almt=1e3*1e3;  %2e3*2e3;%(lost of data) %1e3*1e3 (suggested value); %minimum areas for each piece
 cloudflag=1; %1 apply cloud detection; 0 do not apply cloud detection (four times faster).
 novlmt=3; %if number of repeats <= novlmt, set the area as edges/void.
-novmax=60; % if number of repeats > novmax, only select novmax of them .
+novmax=10; % if number of repeats > novmax, only select novmax of them .
 cntmin=25*25; %unit:pixels. The size of a priori land/ocean area should be big enough to ensure reliable statistical analysis of the histogram of the region. (Liu and Jezek, 2004)
 
 %control parameters for multispec.m
 threshold=0.3; %0.3; %threshold of NDWI for water classification.
-probthre=50.;% threshold for water probability.
+probthre=60.;% threshold for water probability.
 stdthres=0.5; % if NDWI STD > stdthres, discard the image.
 
 % Revise the parent directory for the following two lines.
