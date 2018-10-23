@@ -201,22 +201,21 @@ resrc=abs(wm.x(2)-wm.x(1));
 Md1 = imdilate(wm.z, ones(widthstat/resrc)); %make sure water is absolutely water.
 wm1 = interp2(wm.x,wm.y,Md1,data.x,data.y','*nearest',1);
 ndwil=NDWI(wm1==0);
-mean1=nanmean(ndwil);std1=nanstd(ndwil);cnt1=sum(~isnan(ndwil))
+mean1=nanmean(ndwil);std1=nanstd(ndwil);cnt1=sum(~isnan(ndwil));
 Me1=imerode(wm.z, ones(widthstat/resrc)); %land
 wm1 = interp2(wm.x,wm.y,Me1,data.x,data.y','*nearest',0);
 ndwil=NDWI(wm1==1);
-mean2=nanmean(ndwil);std2=nanstd(ndwil);cnt2=sum(~isnan(ndwil))
+mean2=nanmean(ndwil);std2=nanstd(ndwil);cnt2=sum(~isnan(ndwil));
 
-%Oct 8, 2018; Adaptive threshold 
+%Oct 8, 2018; Simple Adaptive threshold 
 %Modification Sept. 25, 2018: Delete scenes with bad STD.
-
 istdthres=min([stdthres,(mean1 - mean2)/2]);
 badflag=0;
 if (isnan(mean1)||cnt1<cntmin) && (isnan(mean2)||cnt2<cntmin)
     badflag=1;ithreshold =threshold;
 elseif (isnan(mean1)||cnt1<cntmin) && (mean2<0.2&&std2<istdthres) || (isnan(mean2)||cnt2<cntmin)&&(mean1>0.8&&std1<istdthres)
         ithreshold =threshold;
-elseif (std1<istdthres && std2<istdthres)
+elseif (std1<istdthres && std2<istdthres && (mean1-mean2)>dmthres)
         ithreshold=(mean1+mean2)/2;
         if isnan(ithreshold);warning('Estimated threshold is NAN');ithreshold=threshold;end
 else %discard the image.

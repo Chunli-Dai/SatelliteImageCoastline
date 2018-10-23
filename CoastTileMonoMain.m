@@ -88,7 +88,7 @@ for i=1:n
    ftile{i}=fgetl(fid);
 end
 
-%parpool(3)
+parpool(3)
 %parfor xyid=1:n*m*ns*ms
 parfor xyid=1:n
 %for xid=7:8 %5:8 %6:7  %1:80

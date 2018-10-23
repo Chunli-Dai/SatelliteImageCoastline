@@ -86,7 +86,8 @@ else
     return
 end
 % ofile4=['output/',ifile(1:10),'bound_v1.0.tif']; %image boundaries, no data areas
-ofile4=strrep(ofile2,'prob','bound');
+ofile3=strrep(ofile2,'_prob_','_nov_');
+ofile4=strrep(ofile2,'_prob_','_bound_');
 
 % rang0 = [  -3450000    -3400000     1350000     1400000];
 
@@ -129,11 +130,19 @@ data=readGeotiff(ofile2);
 [nsuby,nsubx]=size(data.z);
 prob=data.z;xout=data.x;yout=data.y;
 
+if ~exist(ofile3,'file')
+fprintf([ofile3,' does not exist. \n'])
+return
+else
+data=readGeotiff(ofile3);
+novlpf=data.z;
+end
+
 if ~exist(ofile4,'file')
 fprintf([ofile4,' does not exist. \n'])
 Medgs1=false(nsuby,nsubx); 
 else
-data=readGeotiff(ofile4);
+data=readGeotiff(ofile4); %all void areas: including all image boundaries, grid boundaries, tile box boundaries, and lack of data area
 Medgs1=logical(data.z); %1 edge; 0 non edge
 end
 
@@ -164,6 +173,19 @@ Modfil=~Modfil;
 Modfil(Med)=0;%remove the artifical water around edge;
 clear Med Modj jump
 
+%get the boundaries; 
+%remove the edges of the Tile Box.
+Medgstb=zeros(size(Modfil));
+Medgstb(:,1)=1;Medgstb(:,end)=1;Medgstb(1,:)=1;Medgstb(end,:)=1;
+
+%remove the buffer width (width0, 3km) of the tile box;
+idx=xout<rang0b(1)|xout>rang0b(2);idy=yout<rang0b(3)|yout>rang0b(4);
+Medgstb(:,idx)=1;Medgstb(idy,:)=1;
+%in case of bound*tif data not exist, reproduce the void area by the none a piori buffer zone, lack of data area.
+Medgs=Medgs|(prob==255|novlpf<=novlmt)|Medgsap; %add more edge based on repeats.
+Medgs1(novlpf>=20)=0;%do not apply edges (especially image boundaries) if number of repeats > 20.
+Medgs1=Medgs1|imdilate(Medgs,ones(3))|Medgstb; % combine all edges. Medgsib Medgsap
+% in case of bound*tif not exist, other boundary also apply. Medgs1 should contain all image boundaries and other void areas.
 
 B = bwboundaries(~Modfil,'noholes'); %^_^ keep the unwanted lake islands.
 n=length(B);xo=cell(n,1);yo=cell(n,1);
@@ -188,11 +210,22 @@ for k=1:n %can be slow if poor data quanlity, lots of scatterred points;workster
     end
     x=xout(xid);y=yout(yid);    
     [LAT,LON]=polarstereo_inv(x,y,[], [],70,-45);
-    LAT(zid==0)=nan;LON(zid==0)=nan;%polygon but with only valid polylines displayed.
-    zidi=find(zid==0);zidid=zidi(2:end)-zidi(1:end-1);id=find(zidid==1);%delete sequential nans
-    idx=zidi(id+1);
-    %figure;plot(x,y,'go');hold on;plot(x(idx),y(idx),'r.')
-    LON(idx)=[];LAT(idx)=[];
+%     LAT(zid==0)=nan;LON(zid==0)=nan;%polygon but with only valid polylines displayed.
+    zidi=find(zid==0);zidid=zidi(2:end)-zidi(1:end-1);
+    %id=find(zidid==1);%delete sequential nans
+%    idx=zidi(id+1);
+    idb=find(zidid~=1);M=zidi;M(idb+1)=nan;
+%   idxb=zidi(idb+1); LAT(idxb)=nan;LON(idxb)=nan;
+    [idx,idn]=separatelines(M,10); %fix Bug 15; 10 pixels
+    %figure;plot(x,y,'go');hold on;plot(x(idx),y(idx),'ro-')
+    LAT(zidi(idn))=nan;LON(zidi(idn))=nan;LON(idx)=[];LAT(idx)=[];
+    
+    if 0 % if want to control the minimum length of breaked coastlines
+%         zidi=find(zid==1);zidid=zidi(2:end)-zidi(1:end-1); %bad; Should use the points after removing edges instead.
+%         idb=find(zidid~=1);M=zidi;M(idb+1)=nan;
+%         idxkp=separatelines(M,10);%at least 10 points for each coastline
+    end
+
     xo{k}=LON;yo{k}=LAT;
 end
 fprintf('Retrieve boundary')

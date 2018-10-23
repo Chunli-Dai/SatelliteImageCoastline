@@ -461,7 +461,7 @@ for ix=1:nx
 
 	%Oct 9, 2018
 	%in case of two many repeats, use only the latest (in time) novmax*2 measurements for grouping.
-	iddd=1:(length(un)-novmax*2); %un is sorted as time.
+	iddd=1:(length(un)-novmax*3); %un is sorted as time.
 	idd=[idd(:);idx_last(iddd)]; %delete the first iddd of un
 	id(idd)=[];str(idd)=[];
 
@@ -918,6 +918,7 @@ Medgstb(:,1)=1;Medgstb(:,end)=1;Medgstb(1,:)=1;Medgstb(end,:)=1;
 idx=xout<rang0b(1)|xout>rang0b(2);idy=yout<rang0b(3)|yout>rang0b(4);
 Medgstb(:,idx)=1;Medgstb(idy,:)=1;
 
+Medgsib(novlpf>=20)=0;%do not apply edges (especially image boundaries) if number of repeats > 20.
 Medgs=Medgs|(prob==255|novlpf<=novlmt)|Medgsap; %add more edge based on repeats.
 Medgs1=imdilate(Medgs,ones(3))|Medgstb|Medgsib; % combine all edges. Medgsib Medgsap
 
@@ -950,11 +951,16 @@ for k=1:n %can be slow if poor data quanlity, lots of scatterred points;workster
     end
     x=xout(xid);y=yout(yid);    
     [LAT,LON]=polarstereo_inv(x,y,[], [],70,-45);
-    LAT(zid==0)=nan;LON(zid==0)=nan;%polygon but with only valid polylines displayed.
-    zidi=find(zid==0);zidid=zidi(2:end)-zidi(1:end-1);id=find(zidid==1);%delete sequential nans
-    idx=zidi(id+1);
-    %figure;plot(x,y,'go');hold on;plot(x(idx),y(idx),'r.')
-    LON(idx)=[];LAT(idx)=[];
+%     LAT(zid==0)=nan;LON(zid==0)=nan;%polygon but with only valid polylines displayed.
+    zidi=find(zid==0);zidid=zidi(2:end)-zidi(1:end-1);
+    %id=find(zidid==1);%delete sequential nans
+%    idx=zidi(id+1);
+    idb=find(zidid~=1);M=zidi;M(idb+1)=nan;
+%   idxb=zidi(idb+1); LAT(idxb)=nan;LON(idxb)=nan;
+    [idx,idn]=separatelines(M,10); %fix Bug 15
+    %figure;plot(x,y,'go');hold on;plot(x(idx),y(idx),'ro-')
+    LAT(zidi(idn))=nan;LON(zidi(idn))=nan;LON(idx)=[];LAT(idx)=[];
+    
     xo{k}=LON;yo{k}=LAT;
 end
 fprintf('Retrieve boundary')
@@ -1017,6 +1023,7 @@ title('Final repeat, exclude clouds')
 print('-dpdf','-r300','OverlappingCount_Final') 
 %saveas(gcf,'OverlappingCount_Final','fig')
 %savefig(gcf,'OverlappingCount_Final','compact')
+close all
 end %if flagplot==1
 
 end

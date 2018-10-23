@@ -23,9 +23,10 @@ novmax=60; % if number of repeats > novmax, only select novmax of them. Suggest 
 cntmin=25*25; %unit:pixels. The size of a priori land/ocean area should be big enough to ensure reliable statistical analysis of the histogram of the region. (Liu and Jezek, 2004)
 
 %control parameters for multispec.m
-threshold=0.3; %0.3; %threshold of NDWI for water classification.
+threshold=0.5; %Suggest value 0.5 or 0.3; % general threshold of NDWI for water classification.
 probthre=50.;% threshold for water probability. %Best for migitating random coregistration offset: 50.
-stdthres=0.5; % if NDWI STD > stdthres, discard the image.
+stdthres=0.5; % if NDWI STD > stdthres, discard the image. Suggest value 0.5
+dmthres=0.6; % if mean_ocean - mean_land > dmthres, discard the image. Suggest value 0.6
 
 % Revise the parent directory for the following two lines.
 orthworkdir=[macdir,'/data/chunli/coastline/orthorectwork/']; %to store new orthorectifed images
