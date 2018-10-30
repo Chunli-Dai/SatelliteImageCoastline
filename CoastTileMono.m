@@ -511,7 +511,7 @@ for j=1:length(un)
 suma(j)=length(unique_idx{j})*dx*dx; % total area of each piece.
 end
 %almt=1e3*1e3;% 2e3*2e3;%1e3*1e3; %Adjust this parameter; minimum areas for each piece %hi
-idd=find(suma<=max(dx*dx,almt));idnn=1:length(un);
+idd=find(suma<max(dx*dx,almt));idnn=1:length(un);
 idkp=idnn(~ismember(idnn,idd));idxn=zeros(size(idx));
 for i=1:length(idx)
     idn=find(idkp==idx(i));
