@@ -16,7 +16,7 @@ widthstat=2e3; %buffer width of a priori coastline for calculating ndwi statisti
 width2=100.;   %get rid of a long thin (100 m width) beach band for NDWI difference
 cloudarea=100*100; % clouds over water area, minimum size 100m by 100m; if smaller, clouds get ignored. Also smallest island that would be kept.
 lakearea=1000*500*4;%smallest water body (or lake) (m^2) that would be kept;
-almt=0;  %2e3*2e3;%(lost of data) %1e3*1e3 (suggested value); %minimum areas for each piece
+almt=1e3*1e3;  %2e3*2e3;%(lost of data) %1e3*1e3 (suggested value); %minimum areas for each piece
 cloudflag=1; %1 apply cloud detection; 0 do not apply cloud detection (four times faster).
 novlmt=3; %if number of repeats <= novlmt, set the area as edges/void.
 novmax=60; % if number of repeats > novmax, only select novmax of them. Suggest value 60

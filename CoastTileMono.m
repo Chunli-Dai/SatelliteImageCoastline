@@ -526,6 +526,12 @@ for ixy=1:ns
     iy=ixy-(ix-1)*nx;
     idun(iy,ix)=idx(ixy);
 end
+
+% For those deleted pieces, check if they form large connectted areas; 
+% if so, restore some.
+[un,idun]=restoregrid(un,idun,dx,idg,novlp);
+npc=length(un); %total number of groups
+
 if flagplot==1
 figure;set(gcf,'Color','white');set(gca,'FontSize', 18);set(gcf, 'PaperPosition', [0.25 2.5 4 3]); 
 surf(X*1e-3,Y*1e-3,idun);colormap jet;colorbar; shading interp; axis equal; view(0,90)  
