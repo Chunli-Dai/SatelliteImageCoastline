@@ -39,10 +39,10 @@ end
 npc=length(un);
 ipc=npc;
 for ix=ix1:nx2:ix2 %row
-    jj=ix:(ix+nx2-1);
+    jj=ix:min((ix+nx2-1),ix2);
 for iy= iy1:nx2:iy2 %column
     UL(iy,ix)=1;
-    kk=iy:(iy+nx2-1);
+    kk=iy:min((iy+nx2-1),iy2);
     Mj=zeros(size(Modj),'logical');idgmi=repmat({''},ny,nx);
     novlpj=novlp;
     Mj(kk,jj)=Modj(kk,jj);

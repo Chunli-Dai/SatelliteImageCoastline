@@ -562,8 +562,8 @@ novlpfc=zeros(nsuby,nsubx,'int32');%maximum repeat of the chosen group at a pixe
 prob=255*ones(nsuby,nsubx,'uint8'); %probability of the final water mask at each pixel. 255 no data
 %oflagc=255*ones(nsuby,nsubx,'int32');
 Medgsib=false(nsuby,nsubx); %collect of all images edge lines.
-fid2 = fopen('trend.txt', 'w');
-fid4 = fopen('demTyndalbig.dat','w');
+%fid2 = fopen('trend.txt', 'w');
+%fid4 = fopen('demTyndalbig.dat','w');
 
 % Preallocate for genearting water mask files for each strip.
 idg1=[];
@@ -974,7 +974,7 @@ toc
 clear Mt BWb Medgs1
 idd=find(cellfun(@isempty,xo)); %fix bug 12
 xo(idd)=[];yo(idd)=[];
-save xoyo.mat xo yo -v7.3
+%save xoyo.mat xo yo -v7.3
 % shp1 = struct('Geometry', 'PolyGon', 'X', xo, 'Y', yo);
 shp1 = struct('Geometry', 'PolyLine', 'X', xo, 'Y', yo);
 %shapewrite(shp1, 'coastline.shp');
