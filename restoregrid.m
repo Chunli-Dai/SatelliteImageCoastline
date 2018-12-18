@@ -71,6 +71,7 @@ for iy= iy1:nx2:iy2 %column
     
     %2 the image that occurs most in the rest of pixels  
     M1r=Mj&~M1;
+    nt=sum(M1r(:));
     
     if sum(M1r(:))~=0
     idgmis=idgm(M1r);
